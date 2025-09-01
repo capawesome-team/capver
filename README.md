@@ -23,38 +23,38 @@ CLI for managing versions in a Capacitor project across multiple platforms.
 The CLI can be installed globally via npm:
 
 ```bash
-npm install -g capver
+npm install -g @capawesome/capver
 ```
 
 ## Usage
 
-The CLI can be invoked with the `capver` command.
+The CLI can be invoked with the `@capawesome/capver` command.
 
 ```bash
-npx capver <command> [options]
+npx @capawesome/capver <command> [options]
 ```
 
 ```bash
 # Initialize a new Capacitor project with version 0.0.1
-npx capver set 0.0.1
+npx @capawesome/capver set 0.0.1
 
 # Increment the patch version
-npx capver patch
+npx @capawesome/capver patch
 
 # Increment the minor version
-npx capver minor
+npx @capawesome/capver minor
 
 # Increment the major version
-npx capver major
+npx @capawesome/capver major
 
 # Increment only the build number
-npx capver hotfix
+npx @capawesome/capver hotfix
 
 # Check version consistency across platforms
-npx capver get
+npx @capawesome/capver get
 
 # Synchronize all platforms to use the highest version found
-npx capver sync
+npx @capawesome/capver sync
 ```
 
 ## Commands
@@ -64,7 +64,7 @@ npx capver sync
 Get the version of the app from all relevant files.
 
 ```bash
-npx capver get
+npx @capawesome/capver get
 ```
 
 This command displays the current version across all platforms and verifies they are synchronized.
@@ -74,7 +74,7 @@ This command displays the current version across all platforms and verifies they
 Set the version of the app in all relevant files.
 
 ```bash
-npx capver set <version>
+npx @capawesome/capver set <version>
 ```
 
 **Arguments:**
@@ -85,7 +85,7 @@ npx capver set <version>
 Increment the major version of the app in all relevant files.
 
 ```bash
-npx capver major
+npx @capawesome/capver major
 ```
 
 Increments the major version number (e.g., `1.2.3` → `2.0.0`).
@@ -95,7 +95,7 @@ Increments the major version number (e.g., `1.2.3` → `2.0.0`).
 Increment the minor version of the app in all relevant files.
 
 ```bash
-npx capver minor
+npx @capawesome/capver minor
 ```
 
 Increments the minor version number (e.g., `1.2.3` → `1.3.0`). Maximum value: 999.
@@ -105,7 +105,7 @@ Increments the minor version number (e.g., `1.2.3` → `1.3.0`). Maximum value: 
 Increment the patch version of the app in all relevant files.
 
 ```bash
-npx capver patch
+npx @capawesome/capver patch
 ```
 
 Increments the patch version number (e.g., `1.2.3` → `1.2.4`). Maximum value: 99.
@@ -115,7 +115,7 @@ Increments the patch version number (e.g., `1.2.3` → `1.2.4`). Maximum value: 
 Increment the hotfix version of the app in all relevant files.
 
 ```bash
-npx capver hotfix
+npx @capawesome/capver hotfix
 ```
 
 Increments the hotfix version for mobile platforms (iOS/Android only). Maximum value: 99.
@@ -125,7 +125,7 @@ Increments the hotfix version for mobile platforms (iOS/Android only). Maximum v
 Set the highest version number among all platforms in all relevant files.
 
 ```bash
-npx capver sync
+npx @capawesome/capver sync
 ```
 
 Synchronizes all platforms to use the highest version found across any platform.
@@ -135,7 +135,7 @@ Synchronizes all platforms to use the highest version found across any platform.
 Prints out necessary information for debugging.
 
 ```bash
-npx capver doctor
+npx @capawesome/capver doctor
 ```
 
 Displays system information including Node.js, NPM, CLI version, and OS details.
@@ -145,14 +145,14 @@ Displays system information including Node.js, NPM, CLI version, and OS details.
 The CLI ships with command documentation that is accessible with the `--help` flag.
 
 ```bash
-npx capver --help
+npx @capawesome/capver --help
 ```
 
 ## Integrations
 
 ### Commit and Tag Version
 
-The [commit-and-tag-version](https://www.npmjs.com/package/commit-and-tag-version) package offers automatic versioning, changelog generation, and Git tagging using conventional commits. You can integrate it with the `capver` CLI for a seamless versioning experience. Just add the following configuration to your `package.json`:
+The [commit-and-tag-version](https://www.npmjs.com/package/commit-and-tag-version) package offers automatic versioning, changelog generation, and Git tagging using conventional commits. You can integrate it with the `@capawesome/capver` CLI for a seamless versioning experience. Just add the following configuration to your `package.json`:
 
 ```json
 {
@@ -162,7 +162,7 @@ The [commit-and-tag-version](https://www.npmjs.com/package/commit-and-tag-versio
     },
     "standard-version": {
         "scripts": {
-            "postbump": "npx capver set $npm_package_version"
+            "postbump": "npx @capawesome/capver set $npm_package_version"
         }
     }
 }

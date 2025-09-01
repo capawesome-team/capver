@@ -42,7 +42,7 @@ body:
   - type: textarea
     attributes:
       label: Doctor
-      description: Run `npx capver doctor` in a terminal and paste the output below.
+      description: Run `npx @capawesome/capver doctor` in a terminal and paste the output below.
     validations:
       required: true
   - type: checkboxes
