@@ -1,8 +1,8 @@
 # capver
 
-[![npm version](https://img.shields.io/npm/v/capver)](https://www.npmjs.com/package/capver)
-[![npm downloads](https://img.shields.io/npm/dm/capver)](https://www.npmjs.com/package/capver)
-[![license](https://img.shields.io/npm/l/capver)](https://github.com/capawesome-team/capver/blob/main/LICENSE)
+[![npm version](https://img.shields.io/npm/v/@capawesome/capver)](https://www.npmjs.com/package/@capawesome/capver)
+[![npm downloads](https://img.shields.io/npm/dm/@capawesome/capver)](https://www.npmjs.com/package/@capawesome/capver)
+[![license](https://img.shields.io/npm/l/@capawesome/capver)](https://github.com/capawesome-team/capver/blob/main/LICENSE)
 
 CLI for managing versions in a Capacitor project across multiple platforms. 
 
