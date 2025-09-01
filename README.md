@@ -4,7 +4,7 @@
 [![npm downloads](https://img.shields.io/npm/dm/capver)](https://www.npmjs.com/package/capver)
 [![license](https://img.shields.io/npm/l/capver)](https://github.com/capawesome-team/capver/blob/main/LICENSE)
 
-⚡ 
+⚡ CLI for managing versions in a Capacitor project across multiple platforms. 
 
 ## Installation
 
