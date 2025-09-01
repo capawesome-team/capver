@@ -9,9 +9,14 @@ CLI for managing versions in a Capacitor project across multiple platforms.
 ## Features
 
 - 📱 **Capacitor-native**: Designed specifically for Capacitor projects and workflows.
-- 🚀 **Multi-platform**: Synchronize versions across iOS, Android, and web platforms.
-- 🔄 **Version management**: Set, get, increment (major/minor/patch), and sync versions.
+- 🤖 **Android**: Full Android platform support with build.gradle integration.
+- 🍎 **iOS**: Complete iOS platform support with Xcode project integration.
+- 🌐 **Web**: Complete web platform support with package.json integration.
+- ⬆️ **Automatic increase**: Easily increment major, minor, patch, and hotfix versions.
+- 🔧 **Hotfixes**: Support for hotfix versioning on mobile platforms.
 - 🩺 **Health checks**: Verify version consistency across platforms with built-in diagnostics.
+- 🎯 **Easy usage**: Simple commands with intuitive CLI interface.
+- ✅ **Fully tested**: Comprehensive test coverage for reliable operation.
 
 ## Installation
 
@@ -27,6 +32,29 @@ The CLI can be invoked with the `capver` command.
 
 ```bash
 npx capver <command> [options]
+```
+
+```bash
+# Initialize a new Capacitor project with version 0.0.1
+npx capver set 0.0.1
+
+# Increment the patch version
+npx capver patch
+
+# Increment the minor version
+npx capver minor
+
+# Increment the major version
+npx capver major
+
+# Increment only the build number
+npx capver hotfix
+
+# Check version consistency across platforms
+npx capver get
+
+# Synchronize all platforms to use the highest version found
+npx capver sync
 ```
 
 ## Commands
@@ -119,6 +147,28 @@ The CLI ships with command documentation that is accessible with the `--help` fl
 ```bash
 npx capver --help
 ```
+
+## Integrations
+
+### Commit and Tag Version
+
+The [commit-and-tag-version](https://www.npmjs.com/package/commit-and-tag-version) package offers automatic versioning, changelog generation, and Git tagging using conventional commits. You can integrate it with the `capver` CLI for a seamless versioning experience. Just add the following configuration to your `package.json`:
+
+```json
+{
+    "version": "0.0.1",
+    "scripts": {
+        "release": "commit-and-tag-version --commit-all"
+    },
+    "standard-version": {
+        "scripts": {
+            "postbump": "npx capver set $npm_package_version"
+        }
+    }
+}
+```
+
+This configuration ensures that the version is automatically updated in all relevant files whenever a new version is released. Just run `npm run release` to automatically bump the version, update all relevant files, and commit the changes.
 
 ## Development
 
