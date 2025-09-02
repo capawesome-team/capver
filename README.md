@@ -160,7 +160,7 @@ The [commit-and-tag-version](https://www.npmjs.com/package/commit-and-tag-versio
     "scripts": {
         "release": "commit-and-tag-version --commit-all"
     },
-    "standard-version": {
+    "commit-and-tag-version": {
         "scripts": {
             "postbump": "npx @capawesome/capver set $npm_package_version"
         }
