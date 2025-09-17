@@ -96,26 +96,20 @@ describe('config', () => {
 
     it('should throw error for invalid character', () => {
       expect(() => parsePattern('MMmmpx')).toThrow(
-        "Invalid character 'x' in pattern 'MMmmpx'. Only 'M', 'm', 'p', 'h' are allowed."
+        "Invalid character 'x' in pattern 'MMmmpx'. Only 'M', 'm', 'p', 'h' are allowed.",
       );
     });
 
     it('should throw error for missing major version', () => {
-      expect(() => parsePattern('mmpp')).toThrow(
-        "Pattern 'mmpp' must contain at least one 'M' for major version."
-      );
+      expect(() => parsePattern('mmpp')).toThrow("Pattern 'mmpp' must contain at least one 'M' for major version.");
     });
 
     it('should throw error for missing minor version', () => {
-      expect(() => parsePattern('MMpp')).toThrow(
-        "Pattern 'MMpp' must contain at least one 'm' for minor version."
-      );
+      expect(() => parsePattern('MMpp')).toThrow("Pattern 'MMpp' must contain at least one 'm' for minor version.");
     });
 
     it('should throw error for missing patch version', () => {
-      expect(() => parsePattern('MMmm')).toThrow(
-        "Pattern 'MMmm' must contain at least one 'p' for patch version."
-      );
+      expect(() => parsePattern('MMmm')).toThrow("Pattern 'MMmm' must contain at least one 'p' for patch version.");
     });
   });
 

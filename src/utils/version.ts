@@ -35,8 +35,11 @@ export const parseBuildNumber = (buildNumber: string | number, projectPath: stri
   const pattern = parsePattern(config.pattern);
 
   const minRequiredLength = pattern.minorDigits + pattern.patchDigits + pattern.hotfixDigits;
-  if (buildStr.length < minRequiredLength + 1) { // +1 for at least one major digit
-    throw new CliError(`Invalid build number: ${buildNumber}. Build number must be at least ${minRequiredLength + 1} digits for pattern '${config.pattern}'.`);
+  if (buildStr.length < minRequiredLength + 1) {
+    // +1 for at least one major digit
+    throw new CliError(
+      `Invalid build number: ${buildNumber}. Build number must be at least ${minRequiredLength + 1} digits for pattern '${config.pattern}'.`,
+    );
   }
 
   const fixedPartStart = buildStr.length - (pattern.minorDigits + pattern.patchDigits + pattern.hotfixDigits);
@@ -78,16 +81,22 @@ export const versionToBuildNumber = (version: Version, projectPath: string = pro
   const maxPatch = getMaxValueForDigits(pattern.patchDigits);
 
   if (version.minor > maxMinor) {
-    throw new CliError(`Minor version ${version.minor} exceeds maximum value of ${maxMinor} for pattern '${config.pattern}'`);
+    throw new CliError(
+      `Minor version ${version.minor} exceeds maximum value of ${maxMinor} for pattern '${config.pattern}'`,
+    );
   }
   if (version.patch > maxPatch) {
-    throw new CliError(`Patch version ${version.patch} exceeds maximum value of ${maxPatch} for pattern '${config.pattern}'`);
+    throw new CliError(
+      `Patch version ${version.patch} exceeds maximum value of ${maxPatch} for pattern '${config.pattern}'`,
+    );
   }
 
   if (pattern.hotfixDigits > 0) {
     const maxHotfix = getMaxValueForDigits(pattern.hotfixDigits);
     if (version.hotfix && version.hotfix > maxHotfix) {
-      throw new CliError(`Hotfix version ${version.hotfix} exceeds maximum value of ${maxHotfix} for pattern '${config.pattern}'`);
+      throw new CliError(
+        `Hotfix version ${version.hotfix} exceeds maximum value of ${maxHotfix} for pattern '${config.pattern}'`,
+      );
     }
   }
 
@@ -106,7 +115,9 @@ export const incrementMinor = (version: Version, projectPath: string = process.c
 
   const newMinor = version.minor + 1;
   if (newMinor > maxMinor) {
-    throw new CliError(`Cannot increment minor version: would exceed maximum value of ${maxMinor} for pattern '${config.pattern}'`);
+    throw new CliError(
+      `Cannot increment minor version: would exceed maximum value of ${maxMinor} for pattern '${config.pattern}'`,
+    );
   }
   return { major: version.major, minor: newMinor, patch: 0 };
 };
@@ -118,7 +129,9 @@ export const incrementPatch = (version: Version, projectPath: string = process.c
 
   const newPatch = version.patch + 1;
   if (newPatch > maxPatch) {
-    throw new CliError(`Cannot increment patch version: would exceed maximum value of ${maxPatch} for pattern '${config.pattern}'`);
+    throw new CliError(
+      `Cannot increment patch version: would exceed maximum value of ${maxPatch} for pattern '${config.pattern}'`,
+    );
   }
   return { major: version.major, minor: version.minor, patch: newPatch };
 };
@@ -135,7 +148,9 @@ export const incrementHotfix = (version: Version, projectPath: string = process.
   const currentHotfix = version.hotfix || 0;
   const newHotfix = currentHotfix + 1;
   if (newHotfix > maxHotfix) {
-    throw new CliError(`Cannot increment hotfix version: would exceed maximum value of ${maxHotfix} for pattern '${config.pattern}'`);
+    throw new CliError(
+      `Cannot increment hotfix version: would exceed maximum value of ${maxHotfix} for pattern '${config.pattern}'`,
+    );
   }
   return { ...version, hotfix: newHotfix };
 };

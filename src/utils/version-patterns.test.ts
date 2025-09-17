@@ -1,13 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { writeFileSync, unlinkSync, mkdirSync, existsSync } from 'fs';
 import { join } from 'path';
-import {
-  parseBuildNumber,
-  versionToBuildNumber,
-  incrementMinor,
-  incrementPatch,
-  incrementHotfix,
-} from './version.js';
+import { parseBuildNumber, versionToBuildNumber, incrementMinor, incrementPatch, incrementHotfix } from './version.js';
 
 describe('version with different patterns', () => {
   const testDir = '/tmp/capver-pattern-test';
@@ -65,21 +59,21 @@ describe('version with different patterns', () => {
     it('should throw error when incrementing hotfix', () => {
       const version = { major: 1, minor: 2, patch: 3 };
       expect(() => incrementHotfix(version, testDir)).toThrow(
-        "Cannot increment hotfix version: pattern 'Mmmpp' does not include hotfix digits"
+        "Cannot increment hotfix version: pattern 'Mmmpp' does not include hotfix digits",
       );
     });
 
     it('should throw error when minor exceeds limit', () => {
       const version = { major: 1, minor: 100, patch: 0 };
       expect(() => versionToBuildNumber(version, testDir)).toThrow(
-        "Minor version 100 exceeds maximum value of 99 for pattern 'Mmmpp'"
+        "Minor version 100 exceeds maximum value of 99 for pattern 'Mmmpp'",
       );
     });
 
     it('should throw error when patch exceeds limit', () => {
       const version = { major: 1, minor: 0, patch: 100 };
       expect(() => versionToBuildNumber(version, testDir)).toThrow(
-        "Patch version 100 exceeds maximum value of 99 for pattern 'Mmmpp'"
+        "Patch version 100 exceeds maximum value of 99 for pattern 'Mmmpp'",
       );
     });
   });
@@ -135,7 +129,7 @@ describe('version with different patterns', () => {
     it('should throw error when minor exceeds limit', () => {
       const version = { major: 1, minor: 1000, patch: 0 };
       expect(() => versionToBuildNumber(version, testDir)).toThrow(
-        "Minor version 1000 exceeds maximum value of 999 for pattern 'MMmmmppph'"
+        "Minor version 1000 exceeds maximum value of 999 for pattern 'MMmmmppph'",
       );
     });
   });
