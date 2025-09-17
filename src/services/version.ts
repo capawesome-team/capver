@@ -80,7 +80,7 @@ export class VersionService {
         return null;
       }
 
-      const version = parseBuildNumber(buildNumber);
+      const version = parseBuildNumber(buildNumber, this.projectPath);
       return {
         platform: 'ios',
         version,
@@ -114,7 +114,7 @@ export class VersionService {
         return null;
       }
 
-      const version = parseBuildNumber(versionCode);
+      const version = parseBuildNumber(versionCode, this.projectPath);
       return {
         platform: 'android',
         version,
@@ -171,7 +171,7 @@ export class VersionService {
     await project.load();
 
     const versionString = versionToString(version);
-    const buildNumber = versionToBuildNumber(version);
+    const buildNumber = versionToBuildNumber(version, this.projectPath);
 
     if (project.ios) {
       await project.ios.setVersion(null, null, versionString);
