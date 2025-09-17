@@ -20,6 +20,7 @@ CLI for managing versions in a Capacitor project across multiple platforms.
 - 🌐 **Web**: Complete web platform support with package.json integration.
 - ⬆️ **Automatic increase**: Easily increment major, minor, patch, and hotfix versions.
 - 🔧 **Hotfixes**: Support for hotfix versioning on mobile platforms.
+- ⚙️ **Configurable patterns**: Customize build number patterns to fit your project needs.
 - 🩺 **Health checks**: Verify version consistency across platforms with built-in diagnostics.
 - 🎯 **Easy usage**: Simple commands with intuitive CLI interface.
 - ✅ **Fully tested**: Comprehensive test coverage for reliable operation.
@@ -31,6 +32,36 @@ The CLI can be installed globally via npm:
 ```bash
 npm install -g @capawesome/capver
 ```
+
+## Configuration
+
+You can customize the behavior of the CLI by adding a `capver` section to your `package.json`.
+
+### Pattern
+
+The `pattern` field allows you to define the format of your build numbers. Here is an example configuration:
+
+```json
+{
+  "name": "my-app",
+  "version": "1.2.3",
+  "capver": {
+    "pattern": "MMmmmpphh"
+  }
+}
+```
+
+**Pattern format:**
+
+- `M` = Major version digit (variable length)
+- `m` = Minor version digit (fixed length)
+- `p` = Patch version digit (fixed length)
+- `h` = Hotfix version digit (optional)
+
+**Common patterns:**
+
+- `MMmmmpphh` (default) - Supports up to 999 minor, 99 patch, 99 hotfix
+- `MMmmmppph` - Extended patch support (up to 999)
 
 ## Usage
 
@@ -104,7 +135,7 @@ Increment the minor version of the app in all relevant files.
 npx @capawesome/capver minor
 ```
 
-Increments the minor version number (e.g., `1.2.3` → `1.3.0`). Maximum value: 999.
+Increments the minor version number (e.g., `1.2.3` → `1.3.0`). Maximum value depends on your configured pattern.
 
 ### patch
 
@@ -114,7 +145,7 @@ Increment the patch version of the app in all relevant files.
 npx @capawesome/capver patch
 ```
 
-Increments the patch version number (e.g., `1.2.3` → `1.2.4`). Maximum value: 99.
+Increments the patch version number (e.g., `1.2.3` → `1.2.4`). Maximum value depends on your configured pattern.
 
 ### hotfix
 
@@ -124,7 +155,7 @@ Increment the hotfix version of the app in all relevant files.
 npx @capawesome/capver hotfix
 ```
 
-Increments the hotfix version for mobile platforms (iOS/Android only). Maximum value: 99.
+Increments the hotfix version for mobile platforms (iOS/Android only). Maximum value depends on your configured pattern.
 
 ### sync
 

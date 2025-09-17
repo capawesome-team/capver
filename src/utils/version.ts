@@ -1,3 +1,6 @@
+import { getMaxValueForDigits, loadConfig, parsePattern } from './config.js';
+import { CliError } from './error.js';
+
 export interface Version {
   major: number;
   minor: number;
@@ -8,7 +11,7 @@ export interface Version {
 export const parseVersion = (versionString: string): Version => {
   const parts = versionString.split('.');
   if (parts.length !== 3) {
-    throw new Error(`Invalid version format: ${versionString}. Expected format: major.minor.patch`);
+    throw new CliError(`Invalid version format: ${versionString}. Expected format: major.minor.patch`);
   }
 
   const major = parseInt(parts[0] || '0', 10);
@@ -16,54 +19,76 @@ export const parseVersion = (versionString: string): Version => {
   const patch = parseInt(parts[2] || '0', 10);
 
   if (isNaN(major) || isNaN(minor) || isNaN(patch)) {
-    throw new Error(`Invalid version format: ${versionString}. Version parts must be numbers.`);
+    throw new CliError(`Invalid version format: ${versionString}. Version parts must be numbers.`);
   }
 
   if (major < 0 || minor < 0 || patch < 0) {
-    throw new Error(`Invalid version format: ${versionString}. Version parts must be non-negative.`);
+    throw new CliError(`Invalid version format: ${versionString}. Version parts must be non-negative.`);
   }
 
   return { major, minor, patch };
 };
 
-export const parseBuildNumber = (buildNumber: string | number): Version => {
+export const parseBuildNumber = (buildNumber: string | number, projectPath: string = process.cwd()): Version => {
   const buildStr = buildNumber.toString();
+  const config = loadConfig(projectPath);
+  const pattern = parsePattern(config.pattern);
 
-  // Build number format: [major][minor:3][patch:2][hotfix:2]
-  // The last 7 digits are always minor(3) + patch(2) + hotfix(2)
-  if (buildStr.length < 8) {
-    throw new Error(`Invalid build number: ${buildNumber}. Build number must be at least 8 digits.`);
+  const minRequiredLength = pattern.minorDigits + pattern.patchDigits + pattern.hotfixDigits;
+  if (buildStr.length < minRequiredLength + 1) { // +1 for at least one major digit
+    throw new CliError(`Invalid build number: ${buildNumber}. Build number must be at least ${minRequiredLength + 1} digits for pattern '${config.pattern}'.`);
   }
 
-  const fixedPartStart = buildStr.length - 7;
+  const fixedPartStart = buildStr.length - (pattern.minorDigits + pattern.patchDigits + pattern.hotfixDigits);
   const major = parseInt(buildStr.substring(0, fixedPartStart), 10);
-  const minor = parseInt(buildStr.substring(fixedPartStart, fixedPartStart + 3), 10);
-  const patch = parseInt(buildStr.substring(fixedPartStart + 3, fixedPartStart + 5), 10);
-  const hotfix = parseInt(buildStr.substring(fixedPartStart + 5, fixedPartStart + 7), 10);
 
-  return { major, minor, patch, hotfix };
+  let currentPos = fixedPartStart;
+  const minor = parseInt(buildStr.substring(currentPos, currentPos + pattern.minorDigits), 10);
+  currentPos += pattern.minorDigits;
+
+  const patch = parseInt(buildStr.substring(currentPos, currentPos + pattern.patchDigits), 10);
+  currentPos += pattern.patchDigits;
+
+  let hotfix = 0;
+  if (pattern.hotfixDigits > 0) {
+    hotfix = parseInt(buildStr.substring(currentPos, currentPos + pattern.hotfixDigits), 10);
+  }
+
+  return { major, minor, patch, hotfix: hotfix > 0 ? hotfix : undefined };
 };
 
 export const versionToString = (version: Version): string => {
   return `${version.major}.${version.minor}.${version.patch}`;
 };
 
-export const versionToBuildNumber = (version: Version): number => {
-  // Build number format: [major][minor:3][patch:2][hotfix:2]
-  // Major version has no limit and uses as many digits as needed
-  const majorStr = version.major.toString();
-  const minor = version.minor.toString().padStart(3, '0');
-  const patch = version.patch.toString().padStart(2, '0');
-  const hotfix = (version.hotfix || 0).toString().padStart(2, '0');
+export const versionToBuildNumber = (version: Version, projectPath: string = process.cwd()): number => {
+  const config = loadConfig(projectPath);
+  const pattern = parsePattern(config.pattern);
 
-  if (version.minor > 999) {
-    throw new Error(`Minor version ${version.minor} exceeds maximum value of 999`);
+  const majorStr = version.major.toString();
+  const minor = version.minor.toString().padStart(pattern.minorDigits, '0');
+  const patch = version.patch.toString().padStart(pattern.patchDigits, '0');
+  let hotfix = '';
+
+  if (pattern.hotfixDigits > 0) {
+    hotfix = (version.hotfix || 0).toString().padStart(pattern.hotfixDigits, '0');
   }
-  if (version.patch > 99) {
-    throw new Error(`Patch version ${version.patch} exceeds maximum value of 99`);
+
+  const maxMinor = getMaxValueForDigits(pattern.minorDigits);
+  const maxPatch = getMaxValueForDigits(pattern.patchDigits);
+
+  if (version.minor > maxMinor) {
+    throw new CliError(`Minor version ${version.minor} exceeds maximum value of ${maxMinor} for pattern '${config.pattern}'`);
   }
-  if (version.hotfix && version.hotfix > 99) {
-    throw new Error(`Hotfix version ${version.hotfix} exceeds maximum value of 99`);
+  if (version.patch > maxPatch) {
+    throw new CliError(`Patch version ${version.patch} exceeds maximum value of ${maxPatch} for pattern '${config.pattern}'`);
+  }
+
+  if (pattern.hotfixDigits > 0) {
+    const maxHotfix = getMaxValueForDigits(pattern.hotfixDigits);
+    if (version.hotfix && version.hotfix > maxHotfix) {
+      throw new CliError(`Hotfix version ${version.hotfix} exceeds maximum value of ${maxHotfix} for pattern '${config.pattern}'`);
+    }
   }
 
   return parseInt(`${majorStr}${minor}${patch}${hotfix}`, 10);
@@ -74,27 +99,43 @@ export const incrementMajor = (version: Version): Version => {
   return { major: newMajor, minor: 0, patch: 0 };
 };
 
-export const incrementMinor = (version: Version): Version => {
+export const incrementMinor = (version: Version, projectPath: string = process.cwd()): Version => {
+  const config = loadConfig(projectPath);
+  const pattern = parsePattern(config.pattern);
+  const maxMinor = getMaxValueForDigits(pattern.minorDigits);
+
   const newMinor = version.minor + 1;
-  if (newMinor > 999) {
-    throw new Error(`Cannot increment minor version: would exceed maximum value of 999`);
+  if (newMinor > maxMinor) {
+    throw new CliError(`Cannot increment minor version: would exceed maximum value of ${maxMinor} for pattern '${config.pattern}'`);
   }
   return { major: version.major, minor: newMinor, patch: 0 };
 };
 
-export const incrementPatch = (version: Version): Version => {
+export const incrementPatch = (version: Version, projectPath: string = process.cwd()): Version => {
+  const config = loadConfig(projectPath);
+  const pattern = parsePattern(config.pattern);
+  const maxPatch = getMaxValueForDigits(pattern.patchDigits);
+
   const newPatch = version.patch + 1;
-  if (newPatch > 99) {
-    throw new Error(`Cannot increment patch version: would exceed maximum value of 99`);
+  if (newPatch > maxPatch) {
+    throw new CliError(`Cannot increment patch version: would exceed maximum value of ${maxPatch} for pattern '${config.pattern}'`);
   }
   return { major: version.major, minor: version.minor, patch: newPatch };
 };
 
-export const incrementHotfix = (version: Version): Version => {
+export const incrementHotfix = (version: Version, projectPath: string = process.cwd()): Version => {
+  const config = loadConfig(projectPath);
+  const pattern = parsePattern(config.pattern);
+  const maxHotfix = getMaxValueForDigits(pattern.hotfixDigits);
+
+  if (pattern.hotfixDigits === 0) {
+    throw new CliError(`Cannot increment hotfix version: pattern '${config.pattern}' does not include hotfix digits`);
+  }
+
   const currentHotfix = version.hotfix || 0;
   const newHotfix = currentHotfix + 1;
-  if (newHotfix > 99) {
-    throw new Error(`Cannot increment hotfix version: would exceed maximum value of 99`);
+  if (newHotfix > maxHotfix) {
+    throw new CliError(`Cannot increment hotfix version: would exceed maximum value of ${maxHotfix} for pattern '${config.pattern}'`);
   }
   return { ...version, hotfix: newHotfix };
 };
