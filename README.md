@@ -62,6 +62,7 @@ The `pattern` field allows you to define the format of your build numbers. Here 
 
 - `MMmmmpphh` (default) - Supports up to 999 minor, 99 patch, 99 hotfix
 - `MMmmmppph` - Extended patch support (up to 999)
+- `MMmmpp` - No hotfix support
 
 ## Usage
 
