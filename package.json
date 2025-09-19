@@ -1,6 +1,6 @@
 {
   "name": "@capawesome/capver",
-  "version": "0.0.5",
+  "version": "0.1.0",
   "description": "CLI for managing versions in a Capacitor project across multiple platforms.",
   "type": "module",
   "scripts": {
