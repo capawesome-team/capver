@@ -200,7 +200,7 @@ The [commit-and-tag-version](https://www.npmjs.com/package/commit-and-tag-versio
     },
     "commit-and-tag-version": {
         "scripts": {
-            "postbump": "npx @capawesome/capver set $npm_package_version"
+            "postbump": "npx @capawesome/capver set $(node -p \"require('./package.json').version\")"
         }
     }
 }
