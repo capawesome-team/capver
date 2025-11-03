@@ -200,7 +200,7 @@ The [commit-and-tag-version](https://www.npmjs.com/package/commit-and-tag-versio
     },
     "commit-and-tag-version": {
         "scripts": {
-            "postbump": "npx @capawesome/capver set $(node -p \"require('./package.json').version\")"
+            "postbump": "npx @capawesome/capver set $(node -p \"require('./package.json').version\") && git add android/app/build.gradle ios/App/App/Info.plist"
         }
     }
 }
