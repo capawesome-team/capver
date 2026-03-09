@@ -1,3 +1,4 @@
+import { CapacitorPaths, loadCapacitorConfig } from '@/utils/capacitor-config.js';
 import { CliError } from '@/utils/error.js';
 import {
   Version,
@@ -26,9 +27,17 @@ export interface PlatformVersion {
 
 export class VersionService {
   private projectPath: string;
+  private capacitorPaths: CapacitorPaths | undefined;
 
   constructor(projectPath: string = process.cwd()) {
     this.projectPath = projectPath;
+  }
+
+  private async getCapacitorPaths(): Promise<CapacitorPaths> {
+    if (!this.capacitorPaths) {
+      this.capacitorPaths = await loadCapacitorConfig(this.projectPath);
+    }
+    return this.capacitorPaths;
   }
 
   async getAllVersions(): Promise<PlatformVersion[]> {
@@ -53,15 +62,16 @@ export class VersionService {
   }
 
   async getIosVersion(): Promise<PlatformVersion | null> {
-    const iosPath = join(this.projectPath, 'ios');
-    if (!existsSync(iosPath)) {
+    const { iosPath } = await this.getCapacitorPaths();
+    const fullIosPath = join(this.projectPath, iosPath);
+    if (!existsSync(fullIosPath)) {
       return null;
     }
 
     try {
       const project = new MobileProject(this.projectPath, {
         ios: {
-          path: 'ios/App',
+          path: `${iosPath}/App`,
         },
       });
       await project.load();
@@ -84,7 +94,7 @@ export class VersionService {
       return {
         platform: 'ios',
         version,
-        source: 'ios/App/App.xcodeproj/project.pbxproj',
+        source: `${iosPath}/App/App.xcodeproj/project.pbxproj`,
       };
     } catch (error) {
       return null;
@@ -92,15 +102,16 @@ export class VersionService {
   }
 
   async getAndroidVersion(): Promise<PlatformVersion | null> {
-    const androidPath = join(this.projectPath, 'android');
-    if (!existsSync(androidPath)) {
+    const { androidPath } = await this.getCapacitorPaths();
+    const fullAndroidPath = join(this.projectPath, androidPath);
+    if (!existsSync(fullAndroidPath)) {
       return null;
     }
 
     try {
       const project = new MobileProject(this.projectPath, {
         android: {
-          path: 'android',
+          path: androidPath,
         },
       });
       await project.load();
@@ -118,7 +129,7 @@ export class VersionService {
       return {
         platform: 'android',
         version,
-        source: 'android/app/build.gradle',
+        source: `${androidPath}/app/build.gradle`,
       };
     } catch (error) {
       return null;
@@ -151,19 +162,20 @@ export class VersionService {
   }
 
   async setVersion(version: Version): Promise<void> {
-    const iosPath = join(this.projectPath, 'ios');
-    const androidPath = join(this.projectPath, 'android');
+    const capacitorPaths = await this.getCapacitorPaths();
+    const fullIosPath = join(this.projectPath, capacitorPaths.iosPath);
+    const fullAndroidPath = join(this.projectPath, capacitorPaths.androidPath);
     const packageJsonPath = join(this.projectPath, 'package.json');
 
     const project = new MobileProject(this.projectPath, {
-      ios: existsSync(iosPath)
+      ios: existsSync(fullIosPath)
         ? {
-            path: 'ios/App',
+            path: `${capacitorPaths.iosPath}/App`,
           }
         : undefined,
-      android: existsSync(androidPath)
+      android: existsSync(fullAndroidPath)
         ? {
-            path: 'android',
+            path: capacitorPaths.androidPath,
           }
         : undefined,
     });
