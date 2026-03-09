@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.1.1](https://github.com/capawesome-team/capver/compare/v0.1.0...v0.1.1) (2026-03-09)
+
+
+### Features
+
+* read ios/android paths from Capacitor config ([#5](https://github.com/capawesome-team/capver/issues/5)) ([0ba3bb1](https://github.com/capawesome-team/capver/commit/0ba3bb1a55ae50da515485fff14452f217b67185))
+
+
+### Bug Fixes
+
+* **deps:** npm audit fix ([08ff9a0](https://github.com/capawesome-team/capver/commit/08ff9a059501386c6e85226ba44fdcf4e4181c6f))
+
 ## [0.1.0](https://github.com/capawesome-team/capver/compare/v0.0.5...v0.1.0) (2025-09-19)
 
 
