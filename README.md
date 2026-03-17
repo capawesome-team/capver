@@ -64,6 +64,9 @@ The `pattern` field allows you to define the format of your build numbers. Here 
 - `MMmmmppph` - Extended patch support (up to 999)
 - `MMmmpp` - No hotfix support
 
+> [!WARNING]
+> Android's `versionCode` is a positive integer with a maximum value of **2,147,483,647**. With the default `MMmmmpphh` pattern, this limit is reached at major version **215** (e.g., `215.0.0` would produce a `versionCode` of `2150000000`). If your project is likely to reach high major version numbers (e.g., through automated conventional commit versioning), consider using a shorter pattern like `MMmmmpp` to raise this ceiling.
+
 ## Usage
 
 The CLI can be invoked with the `@capawesome/capver` command.
