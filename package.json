@@ -51,7 +51,7 @@
   ],
   "dependencies": {
     "@robingenz/zli": "0.2.0",
-    "@trapezedev/project": "7.1.3",
+    "@trapezedev/project": "7.1.4",
     "consola": "3.3.0",
     "jiti": "2.6.1",
     "systeminformation": "5.31.3",
