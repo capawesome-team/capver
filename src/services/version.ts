@@ -188,17 +188,6 @@ export class VersionService {
     if (project.ios) {
       await project.ios.setVersion(null, null, versionString);
       await project.ios.setBuild(null, null, buildNumber.toString());
-
-      const infoPlistPath = await project.ios.getInfoPlist(null, null);
-      if (infoPlistPath) {
-        const infoPlist = await project.ios.getPlistFile(infoPlistPath);
-        if (infoPlist) {
-          await infoPlist.set({
-            CFBundleShortVersionString: versionString,
-            CFBundleVersion: buildNumber.toString(),
-          });
-        }
-      }
     }
 
     if (project.android) {
