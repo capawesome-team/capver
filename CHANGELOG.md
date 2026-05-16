@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.1.4](https://github.com/capawesome-team/capver/compare/v0.1.3...v0.1.4) (2026-05-16)
+
+
+### Bug Fixes
+
+* preserve Trapeze's $(MARKETING_VERSION) / $(CURRENT_PROJECT_VERSION) references in Info.plist ([#7](https://github.com/capawesome-team/capver/issues/7)) ([8c594f1](https://github.com/capawesome-team/capver/commit/8c594f1f38f19f3004dec57c1d3d97cb91c037af))
+
 ## [0.1.3](https://github.com/capawesome-team/capver/compare/v0.1.2...v0.1.3) (2026-05-06)
 
 ## [0.1.2](https://github.com/capawesome-team/capver/compare/v0.1.1...v0.1.2) (2026-04-02)
