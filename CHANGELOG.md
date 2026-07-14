@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.1.5](https://github.com/capawesome-team/capver/compare/v0.1.4...v0.1.5) (2026-07-14)
+
+
+### Features
+
+* add support for Capacitor Electron platform ([#8](https://github.com/capawesome-team/capver/issues/8)) ([af5b14b](https://github.com/capawesome-team/capver/commit/af5b14bb31c9b293c2afa620e63aa57ac3fc4715))
+
 ## [0.1.4](https://github.com/capawesome-team/capver/compare/v0.1.3...v0.1.4) (2026-05-16)
 
 
