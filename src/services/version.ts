@@ -147,7 +147,7 @@ export class VersionService {
   }
 
   async getElectronVersion(): Promise<PlatformVersion | null> {
-    return this.getPackageJsonVersion(join('electron', 'package.json'), 'electron');
+    return this.getPackageJsonVersion('electron/package.json', 'electron');
   }
 
   private getPackageJsonVersion(relativePath: string, platform: Platform): PlatformVersion | null {
@@ -210,7 +210,7 @@ export class VersionService {
 
     // Web and Electron only store a version string, not a build number
     await this.setPackageJsonVersion('package.json', versionString);
-    await this.setPackageJsonVersion(join('electron', 'package.json'), versionString);
+    await this.setPackageJsonVersion('electron/package.json', versionString);
 
     await project.commit();
   }
