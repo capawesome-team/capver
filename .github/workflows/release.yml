@@ -1,0 +1,41 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+
+permissions:
+  contents: write
+  id-token: write # Required for npm OIDC trusted publishing
+  issues: write
+  pull-requests: write
+
+env:
+  NODE_VERSION: 24
+
+jobs:
+  release:
+    if: github.repository == 'capawesome-team/capver'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create release pull request or GitHub release
+        id: release-please
+        uses: googleapis/release-please-action@v4
+      - uses: actions/checkout@v4
+        if: ${{ steps.release-please.outputs.release_created }}
+      - uses: actions/setup-node@v4
+        if: ${{ steps.release-please.outputs.release_created }}
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - name: Update npm for OIDC trusted publishing
+        if: ${{ steps.release-please.outputs.release_created }}
+        run: npm install -g npm@latest
+      - if: ${{ steps.release-please.outputs.release_created }}
+        run: npm ci
+      - name: Publish to npm
+        if: ${{ steps.release-please.outputs.release_created }}
+        run: npm publish
