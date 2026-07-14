@@ -1,5 +1,6 @@
 import { CapacitorPaths, loadCapacitorConfig } from '@/utils/capacitor-config.js';
 import { CliError } from '@/utils/error.js';
+import { Platform, platformSupportsHotfix } from '@/utils/platform.js';
 import {
   Version,
   compareVersions,
@@ -20,7 +21,7 @@ Logger.warn = () => {};
 Logger.error = () => {};
 
 export interface PlatformVersion {
-  platform: 'ios' | 'android' | 'web';
+  platform: Platform;
   version: Version;
   source: string;
 }
@@ -56,6 +57,11 @@ export class VersionService {
     const webVersion = await this.getWebVersion();
     if (webVersion) {
       versions.push(webVersion);
+    }
+
+    const electronVersion = await this.getElectronVersion();
+    if (electronVersion) {
+      versions.push(electronVersion);
     }
 
     return versions;
@@ -137,7 +143,15 @@ export class VersionService {
   }
 
   async getWebVersion(): Promise<PlatformVersion | null> {
-    const packageJsonPath = join(this.projectPath, 'package.json');
+    return this.getPackageJsonVersion('package.json', 'web');
+  }
+
+  async getElectronVersion(): Promise<PlatformVersion | null> {
+    return this.getPackageJsonVersion('electron/package.json', 'electron');
+  }
+
+  private getPackageJsonVersion(relativePath: string, platform: Platform): PlatformVersion | null {
+    const packageJsonPath = join(this.projectPath, relativePath);
     if (!existsSync(packageJsonPath)) {
       return null;
     }
@@ -148,13 +162,13 @@ export class VersionService {
         return null;
       }
 
-      // Web only has version string, no build number (hotfix will always be 0)
+      // package.json only has a version string, no build number (hotfix will always be 0)
       const version = parseVersion(packageJson.version);
 
       return {
-        platform: 'web',
+        platform,
         version,
-        source: 'package.json',
+        source: relativePath,
       };
     } catch (error) {
       return null;
@@ -165,7 +179,6 @@ export class VersionService {
     const capacitorPaths = await this.getCapacitorPaths();
     const fullIosPath = join(this.projectPath, capacitorPaths.iosPath);
     const fullAndroidPath = join(this.projectPath, capacitorPaths.androidPath);
-    const packageJsonPath = join(this.projectPath, 'package.json');
 
     const project = new MobileProject(this.projectPath, {
       ios: existsSync(fullIosPath)
@@ -195,15 +208,23 @@ export class VersionService {
       await project.android.setVersionCode(buildNumber);
     }
 
-    if (existsSync(packageJsonPath)) {
-      const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf-8'));
-      packageJson.version = versionString;
-      // Web only stores version string, not build number
-      const fs = await import('fs/promises');
-      await fs.writeFile(packageJsonPath, JSON.stringify(packageJson, null, 2) + '\n');
-    }
+    // Web and Electron only store a version string, not a build number
+    await this.setPackageJsonVersion('package.json', versionString);
+    await this.setPackageJsonVersion('electron/package.json', versionString);
 
     await project.commit();
+  }
+
+  private async setPackageJsonVersion(relativePath: string, versionString: string): Promise<void> {
+    const packageJsonPath = join(this.projectPath, relativePath);
+    if (!existsSync(packageJsonPath)) {
+      return;
+    }
+
+    const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf-8'));
+    packageJson.version = versionString;
+    const fs = await import('fs/promises');
+    await fs.writeFile(packageJsonPath, JSON.stringify(packageJson, null, 2) + '\n');
   }
 
   async ensureVersionsInSync(): Promise<Version> {
@@ -225,7 +246,8 @@ export class VersionService {
     if (!allVersionsInSync) {
       const versionStrings = versions.map((pv) => {
         const versionStr = versionToString(pv.version);
-        const hotfixStr = pv.platform !== 'web' && pv.version.hotfix ? ` (hotfix: ${pv.version.hotfix})` : '';
+        const hotfixStr =
+          platformSupportsHotfix(pv.platform) && pv.version.hotfix ? ` (hotfix: ${pv.version.hotfix})` : '';
         return `${pv.platform}: ${versionStr}${hotfixStr} (${pv.source})`;
       });
       throw new CliError(`Versions are not synchronized across platforms:\n${versionStrings.join('\n')}`);
@@ -250,7 +272,7 @@ export class VersionService {
 
     // Return version with hotfix from iOS or Android if available
     const versionWithHotfix = versions.find(
-      (pv) => pv.platform !== 'web' && pv.version.hotfix && pv.version.hotfix > 0,
+      (pv) => platformSupportsHotfix(pv.platform) && pv.version.hotfix && pv.version.hotfix > 0,
     );
     return versionWithHotfix ? versionWithHotfix.version : firstVersion;
   }

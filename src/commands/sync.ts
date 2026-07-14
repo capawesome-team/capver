@@ -1,5 +1,6 @@
 import versionService from '@/services/version.js';
 import { CliError } from '@/utils/error.js';
+import { platformSupportsHotfix } from '@/utils/platform.js';
 import { versionToString } from '@/utils/version.js';
 import { defineCommand } from '@robingenz/zli';
 import consola from 'consola';
@@ -18,7 +19,8 @@ export default defineCommand({
     consola.info('Current versions:');
     versions.forEach((pv) => {
       const versionStr = versionToString(pv.version);
-      const hotfixStr = pv.platform !== 'web' && pv.version.hotfix ? ` (hotfix: ${pv.version.hotfix})` : '';
+      const hotfixStr =
+        platformSupportsHotfix(pv.platform) && pv.version.hotfix ? ` (hotfix: ${pv.version.hotfix})` : '';
       consola.log(`  ${pv.platform}: ${versionStr}${hotfixStr}`);
     });
 

@@ -33,6 +33,11 @@ describe('mutate:version:sync', () => {
         source: 'android/app/build.gradle',
       },
       { platform: 'web' as const, version: { major: 1, minor: 2, patch: 4 }, source: 'package.json' },
+      {
+        platform: 'electron' as const,
+        version: { major: 1, minor: 2, patch: 4 },
+        source: 'electron/package.json',
+      },
     ];
     const highestVersion = { major: 1, minor: 3, patch: 0, hotfix: 0 };
 
@@ -46,6 +51,7 @@ describe('mutate:version:sync', () => {
     expect(mockConsola.log).toHaveBeenCalledWith('  ios: 1.2.3');
     expect(mockConsola.log).toHaveBeenCalledWith('  android: 1.3.0');
     expect(mockConsola.log).toHaveBeenCalledWith('  web: 1.2.4');
+    expect(mockConsola.log).toHaveBeenCalledWith('  electron: 1.2.4');
     expect(mockConsola.info).toHaveBeenCalledWith('Syncing all platforms to highest version: 1.3.0...');
     expect(mockVersionService.setVersion).toHaveBeenCalledWith(highestVersion);
     expect(mockConsola.success).toHaveBeenCalledWith('All platforms synced to version 1.3.0');

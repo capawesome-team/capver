@@ -1,5 +1,6 @@
 import versionService from '@/services/version.js';
 import { CliError } from '@/utils/error.js';
+import { platformSupportsHotfix } from '@/utils/platform.js';
 import { versionToString } from '@/utils/version.js';
 import { defineCommand } from '@robingenz/zli';
 import consola from 'consola';
@@ -38,7 +39,8 @@ export default defineCommand({
       consola.error('Versions are not synchronized across platforms:');
       versions.forEach((pv) => {
         const versionStr = versionToString(pv.version);
-        const hotfixStr = pv.platform !== 'web' && pv.version.hotfix ? ` (hotfix: ${pv.version.hotfix})` : '';
+        const hotfixStr =
+          platformSupportsHotfix(pv.platform) && pv.version.hotfix ? ` (hotfix: ${pv.version.hotfix})` : '';
         consola.log(`  ${pv.platform}: ${versionStr}${hotfixStr} (${pv.source})`);
       });
       throw new CliError('Versions are not synchronized across platforms');
@@ -47,7 +49,7 @@ export default defineCommand({
     const versionStr = versionToString(firstVersion);
     // Show hotfix if iOS or Android has one
     const platformWithHotfix = versions.find(
-      (pv) => pv.platform !== 'web' && pv.version.hotfix && pv.version.hotfix > 0,
+      (pv) => platformSupportsHotfix(pv.platform) && pv.version.hotfix && pv.version.hotfix > 0,
     );
     const hotfixStr = platformWithHotfix ? ` (hotfix: ${platformWithHotfix.version.hotfix})` : '';
 
