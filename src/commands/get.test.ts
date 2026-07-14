@@ -33,6 +33,11 @@ describe('mutate:version:get', () => {
         source: 'android/app/build.gradle',
       },
       { platform: 'web' as const, version: { major: 1, minor: 2, patch: 3 }, source: 'package.json' },
+      {
+        platform: 'electron' as const,
+        version: { major: 1, minor: 2, patch: 3 },
+        source: 'electron/package.json',
+      },
     ];
 
     mockVersionService.getAllVersions.mockResolvedValue(mockVersions);
@@ -43,6 +48,7 @@ describe('mutate:version:get', () => {
     expect(mockConsola.log).toHaveBeenCalledWith('  ios: ios/App/App.xcodeproj/project.pbxproj');
     expect(mockConsola.log).toHaveBeenCalledWith('  android: android/app/build.gradle');
     expect(mockConsola.log).toHaveBeenCalledWith('  web: package.json');
+    expect(mockConsola.log).toHaveBeenCalledWith('  electron: electron/package.json');
     expect(mockExit).not.toHaveBeenCalled();
   });
 
@@ -81,6 +87,11 @@ describe('mutate:version:get', () => {
         source: 'android/app/build.gradle',
       },
       { platform: 'web' as const, version: { major: 1, minor: 2, patch: 3 }, source: 'package.json' },
+      {
+        platform: 'electron' as const,
+        version: { major: 1, minor: 2, patch: 5 },
+        source: 'electron/package.json',
+      },
     ];
 
     mockVersionService.getAllVersions.mockResolvedValue(mockVersions);
@@ -92,6 +103,7 @@ describe('mutate:version:get', () => {
     expect(mockConsola.log).toHaveBeenCalledWith('  ios: 1.2.3 (ios/App/App.xcodeproj/project.pbxproj)');
     expect(mockConsola.log).toHaveBeenCalledWith('  android: 1.2.4 (android/app/build.gradle)');
     expect(mockConsola.log).toHaveBeenCalledWith('  web: 1.2.3 (package.json)');
+    expect(mockConsola.log).toHaveBeenCalledWith('  electron: 1.2.5 (electron/package.json)');
   });
 
   it('should error when no platform versions found', async () => {

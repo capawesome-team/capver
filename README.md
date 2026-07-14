@@ -18,6 +18,7 @@ CLI for managing versions in a Capacitor project across multiple platforms.
 - 🤖 **Android**: Full Android platform support with build.gradle integration.
 - 🍎 **iOS**: Complete iOS platform support with Xcode project integration.
 - 🌐 **Web**: Complete web platform support with package.json integration.
+- 🖥️ **Electron**: Full Electron platform support with electron/package.json integration.
 - ⬆️ **Automatic increase**: Easily increment major, minor, patch, and hotfix versions.
 - 🔧 **Hotfixes**: Support for hotfix versioning on mobile platforms.
 - ⚙️ **Configurable patterns**: Customize build number patterns to fit your project needs.
