@@ -53,21 +53,21 @@
   ],
   "dependencies": {
     "@robingenz/zli": "0.2.0",
-    "@trapezedev/project": "7.1.4",
+    "@trapezedev/project": "7.1.10",
     "consola": "3.3.0",
     "jiti": "2.6.1",
-    "systeminformation": "5.31.3",
+    "systeminformation": "5.33.15",
     "zod": "4.0.17"
   },
   "devDependencies": {
     "@ionic/prettier-config": "4.0.0",
     "@types/node": "24.2.1",
-    "@vitest/ui": "4.0.18",
+    "@vitest/ui": "4.1.11",
     "prettier": "3.3.3",
     "rimraf": "6.1.3",
     "tsc-alias": "1.8.16",
     "typescript": "5.6.3",
-    "vitest": "4.0.18"
+    "vitest": "4.1.11"
   },
   "prettier": "@ionic/prettier-config"
 }
